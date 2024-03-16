@@ -2,29 +2,47 @@
 #include <fstream>
 #include <string>
 
-int* FooNech(int arr[], const int SIZE) {
-    int* result = new int[SIZE];
+int* DevArr(int arr[], const int SIZE, int& resultSize) {
+    int* result = new int[SIZE]; // Выделяем память под результат
+
+    resultSize = 0; // Размер результата
 
     for (int i = 0; i < SIZE; i++) {
         if (arr[i] % 2 != 0) {
             result[i] = arr[i];
+            resultSize++;
+            //Если arr[i] нечетный, он добавляется в массив result, а затем resultSize увеличивается на 1.
         }
         else {
             for (int j = 1; j < SIZE; j++) {
                 if ((i + j) < SIZE) {
-                    result[i] = arr[i] + arr[i + j];
-                    if (result[i] % 2 != 0)
+                    if ((arr[i] + arr[i + j]) % 2 != 0) {
+                        result[i] = arr[i] + arr[i + j];
+                        resultSize++;
                         break;
+                    }
                 }
                 if ((i - j) >= 0) {
-                    result[i] = arr[i] + arr[i - j];
-                    if (result[i] % 2 != 0)
+                    if ((arr[i] + arr[i - j]) % 2 != 0) {
+                        result[i] = arr[i] + arr[i - j];
+                        resultSize++;
                         break;
-                }
+                    }
+                }//Если  arr[i] четный, программа ищет ближайший нечетный элемент в массиве и добавляет сумму текущего четного элемента с найденным нечетным в массив result.
             }
+
         }
     }
-    return result;
+
+    // Создание копии массива с размером resultSize
+    int* trimmedResult = new int[resultSize];
+    for (int i = 0; i < resultSize; i++) {
+        trimmedResult[i] = result[i];
+    }
+
+    delete[] result; // Удаление исходного, неподогнанного под размер массива
+
+    return trimmedResult;
 }
 
 int main() {
@@ -34,14 +52,15 @@ int main() {
     std::cout << "Введите размер массива: " << std::endl;
     std::cin >> SIZE;
 
-    int* arr = new int[SIZE];
+    int* arr = new int[SIZE]; // Выделяем память под входной массив
 
     std::cout << "Введите " << SIZE << " элементов(a): " << std::endl;
     for (int i = 0; i < SIZE; i++) {
         std::cin >> arr[i];
     }
 
-    int* result = FooNech(arr, SIZE);
+    int resultSize; // размер массива после работы
+    int* result = DevArr(arr, SIZE, resultSize);
 
     // Запись входных данных в файл
     std::ofstream input_file("input.txt");
@@ -61,15 +80,16 @@ int main() {
         std::cerr << "Ошибка открытия файла output.txt" << std::endl;
         return 1;
     }
-    output_file << "Это размер выходного массива и вводные элементы: " << SIZE << std::endl;
-    for (int i = 0; i < SIZE; i++) {
+    output_file << "Это размер выходного массива и вводные элементы: " << resultSize << std::endl;
+    for (int i = 0; i < resultSize; i++) {
         output_file << result[i] << " ";
+        std::cout << result[i] << " ";
     }
     output_file.close();
 
     std::cout << "Данные успешно записаны в файлы input.txt и output.txt" << std::endl;
 
-    delete[] arr;
+    delete[] arr; //очишаем
     delete[] result;
 
     return 0;
