@@ -11,7 +11,7 @@ int* DevArr(int arr[], const int SIZE, int& resultSize) {
         if (arr[i] % 2 != 0) {
             result[i] = arr[i];
             resultSize++;
-            //Если arr[i] нечетный, он добавляется в массив result, а затем resultSize увеличивается на 1.
+            // Если arr[i] нечетный, он добавляется в массив result, а затем resultSize увеличивается на 1.
         }
         else {
             for (int j = 1; j < SIZE; j++) {
@@ -28,7 +28,7 @@ int* DevArr(int arr[], const int SIZE, int& resultSize) {
                         resultSize++;
                         break;
                     }
-                }//Если  arr[i] четный, программа ищет ближайший нечетный элемент в массиве и добавляет сумму текущего четного элемента с найденным нечетным в массив result.
+                }// Если  arr[i] четный, программа ищет ближайший нечетный элемент в массиве и добавляет сумму текущего четного элемента с найденным нечетным в массив result.
             }
 
         }
@@ -48,31 +48,26 @@ int* DevArr(int arr[], const int SIZE, int& resultSize) {
 int main() {
     setlocale(LC_ALL, "ru");
 
-    int SIZE;
-    std::cout << "Введите размер массива: " << std::endl;
-    std::cin >> SIZE;
-
-    int* arr = new int[SIZE]; // Выделяем память под входной массив
-
-    std::cout << "Введите " << SIZE << " элементов(a): " << std::endl;
-    for (int i = 0; i < SIZE; i++) {
-        std::cin >> arr[i];
-    }
-
-    int resultSize; // размер массива после работы
-    int* result = DevArr(arr, SIZE, resultSize);
-
-    // Запись входных данных в файл
-    std::ofstream input_file("input.txt");
+    // Открытие файла для чтения
+    std::ifstream input_file("input.txt");
     if (!input_file.is_open()) {
         std::cerr << "Ошибка открытия файла input.txt" << std::endl;
         return 1;
     }
-    input_file << "Это размер входного массива и вводные элементы: " << SIZE << std::endl;
+
+    int SIZE;
+    input_file >> SIZE; // Чтение размера массива из файла
+
+    int* arr = new int[SIZE]; // Выделяем память под входной массив
+
+    // Чтение элементов массива из файла
     for (int i = 0; i < SIZE; i++) {
-        input_file << arr[i] << " ";
+        input_file >> arr[i];
     }
     input_file.close();
+
+    int resultSize; // размер массива после работы
+    int* result = DevArr(arr, SIZE, resultSize);
 
     // Запись выходных данных в файл
     std::ofstream output_file("output.txt");
@@ -89,7 +84,7 @@ int main() {
 
     std::cout << "Данные успешно записаны в файлы input.txt и output.txt" << std::endl;
 
-    delete[] arr; //очишаем
+    delete[] arr; // Очистка памяти
     delete[] result;
 
     return 0;
